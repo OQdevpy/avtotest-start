@@ -100,3 +100,16 @@ export async function deriveKey(pair, serverPubRaw, salt, sid) {
     ["encrypt", "decrypt"],
   );
 }
+
+/** Xom baytni (rasm/audio) muhrlash — FLAG_RAW, ichida [mime uzunligi][mime][bayt]. */
+export async function sealRaw(key, mime, bytes, { path, direction }) {
+  const m = enc.encode(mime).slice(0, 255);
+  const body = concat(new Uint8Array([m.length]), m, bytes);
+  const nonce = crypto.getRandomValues(new Uint8Array(NONCE_LEN));
+  const ct = await crypto.subtle.encrypt(
+    { name: "AES-GCM", iv: nonce, additionalData: aad(FLAG_RAW, direction, path) },
+    key,
+    body,
+  );
+  return concat(MAGIC, new Uint8Array([FLAG_RAW]), nonce, new Uint8Array(ct));
+}

@@ -166,3 +166,14 @@ Testlar quyidagilarni tekshiradi:
 | POST | `/api/attempts/{id}/answer.bin` | `{question, answer}` |
 | POST | `/api/attempts/{id}/finish.bin` | |
 | GET | `/api/attempts/history.bin` | |
+
+## Demo (backendsiz)
+
+```bash
+cd frontend && npm run build:demo   # → dist-demo/
+```
+
+Demo yig'ilishda `src/lib/transport.js` o'rniga `transport.demo.js` ulanadi. Bu holda so'rovlar Django'ga
+emas, brauzer ichidagi serverga (`src/lib/demoServer.js`) boradi. Protokol o'zgarmaydi: ECDH, AES-GCM `.bin`,
+replay himoyasi, qurilmaga bog'langan token va baholash "server"da. Demo login sahifasida tayyor
+foydalanuvchilar ro'yxati chiqadi. Oddiy `npm run build` natijasiga demo kodi va demo kodlar umuman tushmaydi.

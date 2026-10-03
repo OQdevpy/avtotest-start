@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useApp } from "../AppContext";
 import TopBar from "../components/TopBar";
+import { DEMO } from "../lib/transport";
+import { STUDENTS } from "../lib/demoUsers";
 
 export default function Login() {
   const { login, t } = useApp();
@@ -45,6 +47,18 @@ export default function Login() {
         <button className="btn-primary" disabled={busy || code.length < 4}>
           {busy ? t("loading") : t("enter")}
         </button>
+        {DEMO && (
+          <div className="demo-users">
+            <div className="demo-title">Demo foydalanuvchilar — bosing, kod to'ldiriladi</div>
+            {STUDENTS.map((s) => (
+              <button type="button" key={s.code} className="demo-user" onClick={() => setCode(s.code)}>
+                <span>{s.full_name}</span>
+                <code>{s.code}</code>
+                <small>{s.note}</small>
+              </button>
+            ))}
+          </div>
+        )}
       </form>
     </div>
   );

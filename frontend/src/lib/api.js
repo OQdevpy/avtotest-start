@@ -2,6 +2,7 @@ import {
   CONTENT_TYPE, b64d, b64e, deriveKey, exportPublic, newKeyPair, open, seal,
 } from "./envelope";
 import { deviceId, kvDel, kvGet, kvSet } from "./store";
+import { transport } from "./transport";
 
 const BASE = "/api";
 let session = null; // { key: CryptoKey, token, sid, name, expiresAt }
@@ -32,7 +33,7 @@ export async function restoreSession() {
 
 export async function login(code) {
   const pair = await newKeyPair();
-  const res = await fetch(`${BASE}/auth/login/`, {
+  const res = await transport(`${BASE}/auth/login/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "omit",
@@ -92,7 +93,7 @@ function nonce() {
 export async function get(path) {
   if (!session) throw new ApiError(401, "no_session");
   const full = BASE + path;
-  const res = await fetch(full, { headers: await headers(), credentials: "omit", cache: "no-store" });
+  const res = await transport(full, { headers: await headers(), credentials: "omit", cache: "no-store" });
   return handle(res, full);
 }
 
@@ -101,7 +102,7 @@ export async function post(path, payload = {}) {
   const full = BASE + path;
   // _ts va _n — replay himoyasi (server ikkinchi marta qabul qilmaydi).
   const body = await seal(session.key, { ...payload, _ts: Date.now(), _n: nonce() }, { path: full, direction: "req" });
-  const res = await fetch(full, {
+  const res = await transport(full, {
     method: "POST",
     headers: { ...(await headers()), "Content-Type": CONTENT_TYPE },
     credentials: "omit",
@@ -113,7 +114,7 @@ export async function post(path, payload = {}) {
 /** Rasm/audio: shifrlangan .bin → Blob URL. Chaqiruvchi URL.revokeObjectURL qilishi kerak. */
 export async function media(ref) {
   const full = `${BASE}/media/${ref}.bin`;
-  const res = await fetch(full, { headers: await headers(), credentials: "omit", cache: "no-store" });
+  const res = await transport(full, { headers: await headers(), credentials: "omit", cache: "no-store" });
   if (!res.ok) throw new ApiError(res.status, "media");
   const { mime, data } = await open(session.key, await res.arrayBuffer(), { path: full, direction: "res" });
   return URL.createObjectURL(new Blob([data], { type: mime }));
