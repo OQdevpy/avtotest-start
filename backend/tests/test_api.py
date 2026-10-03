@@ -157,6 +157,9 @@ def test_study_reveals_answers(client_bin, seeded):
     cat = client_bin.decode(client_bin.get("/api/catalog.bin"))["stages"][0]["categories"][0]
     data = client_bin.decode(client_bin.post("/api/attempts/start.bin", {"kind": "study", "ref": cat["id"]}))
     assert data["remaining"] is None and all(q["correct"] for q in data["questions"])
+    q = data["questions"][0]
+    r = client_bin.post(f"/api/attempts/{data['id']}/answer.bin", {"question": q["id"], "answer": q["answers"][0]["id"]})
+    assert r.status_code == 409 and client_bin.decode(r)["error"] == "read_only"
 
 
 def test_logout_revokes(client_bin, seeded):

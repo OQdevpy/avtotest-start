@@ -142,6 +142,9 @@ class AnswerView(APIView):
         ser.is_valid(raise_exception=True)
         with transaction.atomic():
             attempt = get_object_or_404(Attempt.objects.select_for_update(), pk=pk, student=request.user)
+            if attempt.kind == Kind.STUDY:
+                # Ta'lim — faqat o'qish; javob qabul qilinmaydi.
+                return Response({"error": "read_only"}, status=status.HTTP_409_CONFLICT)
             if not attempt.is_open:
                 finish(attempt)
                 return Response({"error": "finished", "result": result_of(attempt)}, status=status.HTTP_409_CONFLICT)

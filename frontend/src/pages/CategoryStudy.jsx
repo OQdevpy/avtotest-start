@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useApp } from "../AppContext";
 import { tr } from "../i18n";
 import { get, post } from "../lib/api";
-import { submitAnswer } from "../lib/attempt";
 import TopBar from "../components/TopBar";
 import Loading from "../components/Loading";
 import QuestionPane from "../components/QuestionPane";
@@ -51,10 +50,6 @@ export default function CategoryStudy() {
   }
 
   const title = tr(info.title, lang);
-  const onAnswer = async (answerId) => {
-    const next = await submitAnswer(attempt, attempt.questions[current].id, answerId);
-    setAttempt(next);
-  };
 
   return (
     <div className="page">
@@ -85,7 +80,7 @@ export default function CategoryStudy() {
             </div>
           </>
         ) : (
-          <QuestionPane question={attempt.questions[current]} onAnswer={onAnswer} showHints />
+          <QuestionPane question={attempt.questions[current]} showHints readOnly />
         )}
         <Pager
           questions={attempt.questions}

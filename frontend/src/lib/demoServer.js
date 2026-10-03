@@ -304,6 +304,7 @@ const routes = [
   ["GET", /^\/api\/attempts\/(\d+)\.bin$/, async (s, m) => serializeAttempt(ownAttempt(s, m[1]))],
   ["POST", /^\/api\/attempts\/(\d+)\/answer\.bin$/, async (s, m, body) => {
     const a = ownAttempt(s, m[1]);
+    if (a.kind === "study") throw new HttpError(409, "read_only");
     if (!isOpen(a)) {
       finish(a);
       throw new HttpError(409, "finished", { result: resultOf(a) });

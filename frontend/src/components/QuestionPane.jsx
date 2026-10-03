@@ -5,7 +5,8 @@ import { BinAudio, BinImage } from "./BinMedia";
 import Modal from "./Modal";
 
 /** Savol + F1..F5 javoblar + rasm. Javob holati serverdan keladi. */
-export default function QuestionPane({ question, onAnswer, timer, showHints, locked }) {
+/** readOnly — Ta'lim rejimi: to'g'ri javob ko'rinadi, lekin variantlarni bosib bo'lmaydi. */
+export default function QuestionPane({ question, onAnswer, timer, showHints, locked, readOnly }) {
   const { t, lang } = useApp();
   const [hint, setHint] = useState(null); // "audio" | "photo"
   const [pending, setPending] = useState(null);
@@ -17,7 +18,7 @@ export default function QuestionPane({ question, onAnswer, timer, showHints, loc
 
   const answered = question.chosen != null;
   const choose = (a) => {
-    if (answered || locked || pending) return;
+    if (readOnly || answered || locked || pending) return;
     setPending(a.id);
     Promise.resolve(onAnswer(a.id)).finally(() => setPending(null));
   };
@@ -47,12 +48,22 @@ export default function QuestionPane({ question, onAnswer, timer, showHints, loc
       <div className="q-banner">{tr(question.text, lang)}</div>
       <div className="q-body">
         <div className="q-answers">
-          {question.answers.map((a, i) => (
-            <button key={a.id} className={`answer ${stateOf(a)}`} onClick={() => choose(a)} disabled={answered || locked}>
-              <span className="fkey">F{i + 1}</span>
-              <span className="answer-text">{tr(a.text, lang)}</span>
-            </button>
-          ))}
+          {question.answers.map((a, i) => {
+            const inner = (
+              <>
+                <span className="fkey">F{i + 1}</span>
+                <span className="answer-text">{tr(a.text, lang)}</span>
+              </>
+            );
+            // O'qish (Ta'lim) rejimida javoblar tugma emas — faqat ko'rsatiladi.
+            return readOnly ? (
+              <div key={a.id} className={`answer readonly ${stateOf(a)}`}>{inner}</div>
+            ) : (
+              <button key={a.id} className={`answer ${stateOf(a)}`} onClick={() => choose(a)} disabled={answered || locked}>
+                {inner}
+              </button>
+            );
+          })}
           {showHints && (question.audio_hint || question.photo_hint) && (
             <div className="hints">
               <button className="hint-btn" disabled={!question.audio_hint} onClick={() => setHint("audio")}>

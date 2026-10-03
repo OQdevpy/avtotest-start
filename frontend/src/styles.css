@@ -106,7 +106,7 @@ button:disabled { cursor: default; }
   border: 2px solid transparent; border-radius: 6px; padding: 4px 8px 4px 4px; font-weight: 700; font-size: 16px;
   box-shadow: 0 2px 4px rgb(0 0 0 / .35); min-height: 42px;
 }
-.answer:not(:disabled):hover { background: var(--answer-hover); }
+button.answer:not(:disabled):hover { background: var(--answer-hover); }
 .answer.pending { border-color: #facc15; }
 .answer.right .fkey { background: var(--ok); }
 .answer.right { border-color: var(--ok); }
@@ -207,3 +207,4 @@ audio { width: 100%; margin-top: 8px; }
 .demo-user small { grid-column: 1 / -1; color: var(--muted); font-size: 12px; }
 .answer:focus-visible, .page-num:focus-visible, .tile:focus-visible, button:focus-visible { outline: 2px solid #93c5fd; outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { .tile { transition: none; } }
+.answer.readonly { cursor: default; user-select: text; }
