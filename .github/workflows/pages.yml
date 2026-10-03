@@ -1,9 +1,8 @@
 name: Demo → GitHub Pages
 
+# Faqat qo'lda: GitHub Pages bepul tarifda faqat ochiq (public) repoda ishlaydi.
+# Repo ochiq bo'lsa: Settings → Pages → Source: GitHub Actions, so'ng Actions'dan ishga tushiring.
 on:
-  push:
-    branches: [claude/intelligent-archimedes-6cp7tk, main]
-    paths: ["frontend/**", ".github/workflows/pages.yml"]
   workflow_dispatch:
 
 permissions:
