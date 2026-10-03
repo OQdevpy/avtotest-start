@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD majburiy}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DEBUG: "false"
+      DB_HOST: db
+      REDIS_URL: redis://redis:6379/0
+      SECURE_SSL_REDIRECT: "false"  # TLS tashqi proksi/nginx'da tugaydi
+    depends_on:
+      db: {condition: service_healthy}
+      redis: {condition: service_started}
+    volumes:
+      - media:/app/media
+      - static:/app/staticfiles
+    # Port tashqariga ochilmaydi — faqat nginx orqali.
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        ADMIN_URL: ${ADMIN_URL}
+    restart: unless-stopped
+    depends_on: [backend]
+    ports: ["${WEB_PORT:-8080}:80"]
+    volumes:
+      - static:/srv/static:ro
+
+volumes:
+  pgdata:
+  media:
+  static:
