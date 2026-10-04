@@ -2,8 +2,8 @@
 // Protokol aynan bir xil: ECDH P-256 + HKDF → AES-256-GCM, .bin konvert, AAD yo'lga bog'langan,
 // _ts/_n replay himoyasi, qurilmaga bog'langan token, baholash "server"da.
 
-import { CONTENT_TYPE, b64d, b64e, deriveKey, exportPublic, newKeyPair, open, seal, sealRaw } from "./envelope";
-import { CATEGORIES, SAMPLES, STAGES, STUDENTS, iconSvg, imageSvg, infoSvg } from "./demoData";
+import { CONTENT_TYPE, b64d, b64e, deriveKey, exportPublic, newKeyPair, open, seal } from "./envelope";
+import { STUDENTS } from "./demoData";
 import { kvGet, kvSet } from "./store";
 
 const EXAM_SECONDS = 25 * 60;
@@ -12,16 +12,6 @@ const MAX_SKEW = 120;
 const enc = new TextEncoder();
 
 // ---------- Kontent (deterministik, seed_demo bilan bir xil tuzilma) ----------
-
-function mulberry32(a) {
-  return () => {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
 
 function sample(rng, arr, k) {
   const a = arr.slice();
@@ -32,61 +22,20 @@ function sample(rng, arr, k) {
   return a.slice(0, Math.min(k, a.length));
 }
 
-function buildContent() {
-  const stages = [];
-  const categories = [];
-  const questions = [];
-  const variants = [];
-  let qid = 1;
-  let aid = 1;
-  let cid = 1;
-  STAGES.forEach((s, si) => {
-    const stage = { id: si + 1, number: s.number, title: s.title };
-    stages.push(stage);
-    CATEGORIES[s.number].forEach((c, order) => {
-      const cat = {
-        id: cid++,
-        stage: stage.id,
-        title: c.title,
-        icon: c.icon,
-        info: {
-          uz: `«${c.title.uz}» bo'limi bo'yicha qisqa ma'lumot.\n\nO'ngdagi rasmda shu bo'limga tegishli belgilar ko'rsatilgan. Pastdagi raqamlarni bosib savollarga o'ting — Ta'lim rejimida to'g'ri javob yashil rangda ko'rinadi.`,
-          kr: `«${c.title.kr}» бўлими бўйича қисқа маълумот.`,
-          ru: `Краткая информация по разделу «${c.title.ru}».\n\nНажмите на номера внизу, чтобы перейти к вопросам — в режиме обучения правильный ответ выделен зелёным.`,
-        },
-      };
-      categories.push(cat);
-      for (let i = 0; i < 12; i++) {
-        const smp = SAMPLES[(i + order + s.number) % SAMPLES.length];
-        questions.push({
-          id: qid++,
-          category: cat.id,
-          stage: stage.id,
-          text: { uz: smp.uz, kr: smp.kr, ru: smp.ru },
-          image: smp.image || null,
-          explanation: {
-            uz: "To'g'ri javob yo'l harakati qoidalariga asoslangan.",
-            kr: "Тўғри жавоб йўл ҳаракати қоидаларига асосланган.",
-            ru: "Правильный ответ основан на правилах дорожного движения.",
-          },
-          answers: smp.answers.map((t, j) => ({ id: aid++, text: { uz: t }, correct: j === smp.correct })),
-        });
-      }
-    });
-  });
-  const rng = mulberry32(42);
-  let vid = 1;
-  const ids = questions.map((q) => q.id);
-  for (let n = 1; n <= 60; n++) variants.push({ id: vid++, stage: null, number: n, questions: sample(rng, ids, 20) });
-  for (const st of stages) {
-    const sids = questions.filter((q) => q.stage === st.id).map((q) => q.id);
-    for (let n = 1; n <= 18; n++) variants.push({ id: vid++, stage: st.id, number: n, questions: sample(rng, sids, 20) });
-  }
-  return { stages, categories, questions, variants };
-}
+// Kontent haqiqiy bazadan (Firebase eksporti) — public/content.json.
+// Rasmlar shu faylda nom bilan keladi, brauzer ularni to'g'ridan-to'g'ri
+// public/media/ dan (GitHub Pages orqali) o'qiydi — shifrlanmaydi.
+let DB = null;
+let Q = null;
 
-const DB = buildContent();
-const Q = new Map(DB.questions.map((q) => [q.id, q]));
+async function ensureContent() {
+  if (DB) return;
+  const base = import.meta.env.BASE_URL || "/";
+  const res = await fetch(`${base}content.json`, { cache: "force-cache" });
+  if (!res.ok) throw new Error("content.json yuklanmadi");
+  DB = await res.json();
+  Q = new Map(DB.questions.map((q) => [q.id, q]));
+}
 
 // ---------- Holat (IndexedDB'da saqlanadi — sahifa yangilanganda ham) ----------
 
@@ -218,7 +167,7 @@ function serializeAttempt(a) {
       return {
         id: q.id,
         text: q.text,
-        image: q.image ? `question/${q.id}/image` : null,
+        image: q.image || null,
         photo_hint: null,
         audio_hint: null,
         explanation: show ? q.explanation : null,
@@ -273,7 +222,7 @@ const routes = [
       number: st.number,
       title: st.title,
       categories: DB.categories.filter((c) => c.stage === st.id).map((c) => ({
-        id: c.id, title: c.title, icon: `category/${c.id}/icon`,
+        id: c.id, title: c.title, icon: c.icon || null,
         count: DB.questions.filter((q) => q.category === c.id).length,
       })),
       variants: DB.variants.filter((v) => v.stage === st.id).map((v) => ({ id: v.id, number: v.number })),
@@ -283,7 +232,12 @@ const routes = [
   ["GET", /^\/api\/categories\/(\d+)\/info\.bin$/, async (s, m) => {
     const c = DB.categories.find((x) => x.id === Number(m[1]));
     if (!c) throw new HttpError(404, "not_found");
-    return { id: c.id, title: c.title, info: c.info, info_image: `category/${c.id}/info_image` };
+    const info = {
+      uz: `«${c.title.uz}» bo'limi. Pastdagi raqamlarni bosib savollarga o'ting — Ta'lim rejimida to'g'ri javob yashil rangda ko'rinadi.`,
+      kr: `«${c.title.kr}» бўлими. Пастдаги рақамларни босиб саволларга ўтинг.`,
+      ru: `Раздел «${c.title.ru}». Нажмите на номера внизу, чтобы перейти к вопросам — в режиме обучения правильный ответ выделен зелёным.`,
+    };
+    return { id: c.id, title: c.title, info, info_image: c.icon || null };
   }],
   ["POST", /^\/api\/attempts\/start\.bin$/, async (s, m, body) => {
     const kinds = ["study", "category", "stage", "final", "variant"];
@@ -335,19 +289,6 @@ const routes = [
   }],
 ];
 
-async function mediaBytes(kind, id, field) {
-  if (kind === "category") {
-    const c = DB.categories.find((x) => x.id === id);
-    if (c && field === "icon") return enc.encode(iconSvg(c.icon));
-    if (c && field === "info_image") return enc.encode(infoSvg(c.icon));
-  }
-  if (kind === "question" && field === "image") {
-    const q = Q.get(id);
-    if (q?.image) return enc.encode(imageSvg(q.image));
-  }
-  return null;
-}
-
 export async function handle(req) {
   if (req.path === "/api/auth/login/" && req.method === "POST") return login(req);
   let session;
@@ -357,13 +298,7 @@ export async function handle(req) {
     return json(e.status, { error: e.code });
   }
   try {
-    const mm = /^\/api\/media\/(category|question)\/(\d+)\/(\w+)\.bin$/.exec(req.path);
-    if (mm && req.method === "GET") {
-      const bytes = await mediaBytes(mm[1], Number(mm[2]), mm[3]);
-      if (!bytes) throw new HttpError(404, "not_found");
-      const body = await sealRaw(session.key, "image/svg+xml", bytes, { path: req.path, direction: "res" });
-      return { status: 200, contentType: CONTENT_TYPE, body };
-    }
+    await ensureContent();
     for (const [method, re, fn] of routes) {
       const m = re.exec(req.path);
       if (!m || method !== req.method) continue;

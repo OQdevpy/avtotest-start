@@ -1,24 +1,74 @@
+// Rasm bo'lmaganda ko'rsatiladigan chiroyli o'rindiq (AvtoStart brendida).
 export default function Placeholder({ className = "" }) {
   return (
     <div className={`placeholder ${className}`}>
-      <svg viewBox="0 0 800 520" aria-label="Avtostart">
-        <g fill="#8a8a8a">
-          <rect x="70" y="40" width="70" height="95" rx="4" />
-          <circle cx="62" cy="120" r="18" />
-          <rect x="40" y="140" width="45" height="45" rx="10" />
-          <circle cx="130" cy="140" r="18" />
-          <rect x="108" y="160" width="45" height="25" rx="10" />
-          <text x="190" y="160" fontFamily="Lato, Arial" fontWeight="900" fontSize="140">Avtostart</text>
+      <svg viewBox="0 0 820 540" preserveAspectRatio="xMidYMid slice" aria-label="AvtoStart" role="img">
+        <defs>
+          <linearGradient id="ph-bg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#0b1733" />
+            <stop offset="0.55" stopColor="#0a1229" />
+            <stop offset="1" stopColor="#060b1c" />
+          </linearGradient>
+          <linearGradient id="ph-badge" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#2563eb" />
+            <stop offset="1" stopColor="#22d3ee" />
+          </linearGradient>
+          <radialGradient id="ph-glow" cx="0.5" cy="0.42" r="0.5">
+            <stop offset="0" stopColor="#1d4ed8" stopOpacity="0.35" />
+            <stop offset="1" stopColor="#1d4ed8" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+
+        <rect width="820" height="540" fill="url(#ph-bg)" />
+        <rect width="820" height="540" fill="url(#ph-glow)" />
+
+        {/* yengil to'lqin chiziqlar — sayt foni bilan uyg'un */}
+        <g fill="none" stroke="#22d3ee" strokeOpacity="0.1" strokeWidth="1.5">
+          <path d="M-20 430 Q 205 360 410 430 T 840 430" />
+          <path d="M-20 465 Q 205 395 410 465 T 840 465" />
+          <path d="M-20 400 Q 205 330 410 400 T 840 400" />
         </g>
-        <g>
-          <path d="M210 470 Q215 330 300 300 L360 230 Q400 210 440 230 L500 300 Q585 330 590 470 Z" fill="#050505" />
-          <path d="M300 300 L360 232 Q400 214 440 232 L500 300" fill="none" stroke="#9aa3b5" strokeWidth="3" />
-          <path d="M215 360 Q400 330 585 360" fill="none" stroke="#596173" strokeWidth="2" />
-          <circle cx="285" cy="380" r="13" fill="none" stroke="#e5e7eb" strokeWidth="4" />
-          <circle cx="306" cy="384" r="8" fill="none" stroke="#e5e7eb" strokeWidth="3" />
-          <circle cx="515" cy="380" r="13" fill="none" stroke="#e5e7eb" strokeWidth="4" />
-          <circle cx="494" cy="384" r="8" fill="none" stroke="#e5e7eb" strokeWidth="3" />
+
+        {/* markaziy nishon: yo'l belgisi (uchburchak) */}
+        <g transform="translate(410 215)">
+          <circle r="96" fill="url(#ph-badge)" opacity="0.14" />
+          <circle r="70" fill="url(#ph-badge)" opacity="0.22" />
+          <path
+            d="M0 -46 L44 32 Q49 42 38 42 L-38 42 Q-49 42 -44 32 Z"
+            fill="none"
+            stroke="url(#ph-badge)"
+            strokeWidth="9"
+            strokeLinejoin="round"
+          />
+          <rect x="-5" y="-22" width="10" height="34" rx="4" fill="#67e8f9" />
+          <circle cx="0" cy="28" r="6" fill="#67e8f9" />
         </g>
+
+        {/* brend nomi */}
+        <text
+          x="410"
+          y="400"
+          textAnchor="middle"
+          fontFamily="Lato, Arial, sans-serif"
+          fontWeight="900"
+          fontSize="62"
+          letterSpacing="1"
+          fill="#e8eefc"
+        >
+          AvtoStart
+        </text>
+        <text
+          x="410"
+          y="446"
+          textAnchor="middle"
+          fontFamily="Lato, Arial, sans-serif"
+          fontWeight="400"
+          fontSize="24"
+          letterSpacing="6"
+          fill="#64748b"
+        >
+          RASM YO'Q
+        </text>
       </svg>
     </div>
   );

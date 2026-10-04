@@ -27,11 +27,33 @@ function useBinUrl(ref) {
   return url;
 }
 
-/** Shifrlangan .bin rasm. Rasm bo'lmasa — «Avtostart» logotipi. */
+// Shifrlangan backend uchun havola: "question/5/image" yoki "category/3/icon".
+// Aks holda — oddiy fayl nomi (demo), u public/media/ dan to'g'ridan-to'g'ri o'qiladi.
+const isEncryptedRef = (src) => /^(question|category)\/\d+\/[a-z_]+$/.test(src);
+const directUrl = (src) => `${import.meta.env.BASE_URL || "/"}media/${src}`;
+
+/** Rasm. Shifrlangan backendda — .bin orqali; demoda — media/ dan to'g'ridan-to'g'ri.
+ *  Rasm bo'lmasa yoki yuklanmasa — chiroyli «rasm yo'q» o'rindig'i. */
 export function BinImage({ src, alt = "", className = "", fallback = true }) {
-  const url = useBinUrl(src);
-  if (!src || !url) return fallback ? <Placeholder className={className} /> : null;
-  return <img className={className} src={url} alt={alt} draggable={false} onContextMenu={(e) => e.preventDefault()} />;
+  const encrypted = src && isEncryptedRef(src);
+  const binUrl = useBinUrl(encrypted ? src : null);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => setFailed(false), [src]);
+
+  if (!src || failed || (encrypted && !binUrl)) {
+    return fallback ? <Placeholder className={className} /> : null;
+  }
+  const url = encrypted ? binUrl : directUrl(src);
+  return (
+    <img
+      className={className}
+      src={url}
+      alt={alt}
+      draggable={false}
+      onContextMenu={(e) => e.preventDefault()}
+      onError={() => setFailed(true)}
+    />
+  );
 }
 
 export function BinAudio({ src }) {
