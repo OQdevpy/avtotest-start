@@ -32,6 +32,7 @@ export default function Login() {
     <div className="page">
       <TopBar />
       <form className="login-card" onSubmit={submit} autoComplete="off">
+        <img className="login-logo" src={`${import.meta.env.BASE_URL || "/"}logo.webp`} alt="pravaexpress.uz" />
         <h2>{t("loginTitle")}</h2>
         <label htmlFor="code">{t("code")}</label>
         <input

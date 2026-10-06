@@ -1,1 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#0b1733"/><text x="32" y="44" font-family="Lato, Arial, sans-serif" font-weight="900" font-size="34" text-anchor="middle" fill="#fff">p</text><circle cx="48" cy="18" r="7" fill="#e11d1d"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#0b1733"/>
+  <g transform="translate(34 32)">
+    <circle r="15" fill="none" stroke="#fff" stroke-width="4"/>
+    <circle r="3.5" fill="#fff"/>
+    <path d="M-12 -2 A12 12 0 0 1 12 -2 L7 2 A7 7 0 0 0 -7 2 Z" fill="#fff"/>
+    <path d="M-3 4 L-7 14 M3 4 L7 14" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <g stroke="#e11d1d" stroke-width="4" stroke-linecap="round">
+    <path d="M6 26 H16"/><path d="M4 33 H14"/><path d="M8 40 H16"/>
+  </g>
+</svg>
