@@ -122,8 +122,18 @@ button.answer:not(:disabled):hover { background: var(--answer-hover); }
 .q-media { position: relative; }
 .q-image { width: 100%; aspect-ratio: 820 / 540; object-fit: contain; border-radius: 8px; background: #000; display: block; }
 .q-image.white { background: #fff; }
-.placeholder { overflow: hidden; border-radius: 8px; }
-.placeholder svg { width: 100%; height: 100%; display: block; }
+.placeholder {
+  overflow: hidden; border-radius: 8px;
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
+  border: 1px solid #e2e8f0;
+}
+.placeholder-logo { width: min(62%, 360px); height: auto; opacity: 0.95; }
+.placeholder-note { font-size: 13px; letter-spacing: 4px; color: #94a3b8; font-weight: 700; }
+.cat-icon .placeholder { gap: 6px; background: #f8fafc; }
+.cat-icon .placeholder-logo { width: 78%; }
+.cat-icon .placeholder-note { display: none; }
 .timer { position: absolute; top: 0; right: 0; background: #1a1a1a; border-radius: 6px; padding: 4px 8px; font-size: 18px; z-index: 2; }
 .hint-image { max-width: 100%; max-height: 70vh; display: block; margin: 0 auto; }
 audio { width: 100%; margin-top: 8px; }
