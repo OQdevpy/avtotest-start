@@ -108,12 +108,14 @@ class StartView(APIView):
         questions, ref_id = pick_questions(kind, ref, count)
         if not questions:
             return Response({"error": "empty"}, status=status.HTTP_404_NOT_FOUND)
+        # Savol 20 dan ortiq bo'lsa — uzoqroq vaqt (45 daqiqa).
+        duration = settings.EXAM_DURATION_LONG if len(questions) > settings.EXAM_LONG_THRESHOLD else settings.EXAM_DURATION
 
         rng = random.SystemRandom()
         with transaction.atomic():
             attempt = Attempt.objects.create(
                 student=request.user, kind=kind, ref_id=ref_id, total=len(questions),
-                deadline=None if kind == Kind.STUDY else timezone.now() + settings.EXAM_DURATION,
+                deadline=None if kind == Kind.STUDY else timezone.now() + duration,
             )
             items = []
             for pos, q in enumerate(questions, 1):

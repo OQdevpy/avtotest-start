@@ -7,6 +7,8 @@ import { STUDENTS } from "./demoData";
 import { kvGet, kvSet } from "./store";
 
 const EXAM_SECONDS = 25 * 60;
+const EXAM_SECONDS_LONG = 45 * 60;
+const EXAM_LONG_THRESHOLD = 20;
 const SESSION_HOURS = 12;
 const MAX_SKEW = 120;
 const enc = new TextEncoder();
@@ -249,7 +251,10 @@ const routes = [
     const id = state.nextAttempt++;
     state.attempts[id] = {
       id, student: s.student, kind: body.kind, ref: body.ref ?? null,
-      deadline: body.kind === "study" ? null : Date.now() + EXAM_SECONDS * 1000,
+      deadline:
+        body.kind === "study"
+          ? null
+          : Date.now() + (ids.length > EXAM_LONG_THRESHOLD ? EXAM_SECONDS_LONG : EXAM_SECONDS) * 1000,
       finished: null,
       items: ids.map((q) => ({ q, chosen: null, correct: null })),
     };

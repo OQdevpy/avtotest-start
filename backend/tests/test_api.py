@@ -202,3 +202,12 @@ def test_unpublished_not_in_attempts(client_bin, seeded):
     Question.objects.update(is_published=False)
     r = client_bin.post("/api/attempts/start.bin", {"kind": "final"})
     assert r.status_code == 404
+
+
+def test_long_exam_gets_45_minutes(client_bin, seeded):
+    # 20 ta -> 25 daqiqa
+    short = client_bin.decode(client_bin.post("/api/attempts/start.bin", {"kind": "final", "count": 20}))
+    assert 20 * 60 < short["remaining"] <= 25 * 60
+    # 50 ta -> 45 daqiqa
+    long = client_bin.decode(client_bin.post("/api/attempts/start.bin", {"kind": "final", "count": 50}))
+    assert 25 * 60 < long["remaining"] <= 45 * 60

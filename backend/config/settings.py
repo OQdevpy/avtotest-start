@@ -150,6 +150,8 @@ REST_FRAMEWORK = {
 BIN_SESSION_TTL = timedelta(hours=int(env("BIN_SESSION_TTL_HOURS", "12")))
 BIN_MAX_CLOCK_SKEW = int(env("BIN_MAX_CLOCK_SKEW", "120"))  # soniya
 EXAM_DURATION = timedelta(minutes=int(env("EXAM_DURATION_MINUTES", "25")))
+EXAM_DURATION_LONG = timedelta(minutes=int(env("EXAM_DURATION_LONG_MINUTES", "45")))
+EXAM_LONG_THRESHOLD = int(env("EXAM_LONG_THRESHOLD", "20"))
 LOGIN_MAX_FAILS = int(env("LOGIN_MAX_FAILS", "10"))  # bir IP uchun, 15 daqiqada
 SHUFFLE_ANSWERS = env_bool("SHUFFLE_ANSWERS", False)
 
