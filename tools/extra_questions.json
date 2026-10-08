@@ -1,0 +1,25 @@
+[
+  {
+    "key": "avariya-holati-qora-avtomobil",
+    "stage": 2,
+    "category_uz": "Atamalar",
+    "image": "extra_avariya_holati.svg",
+    "text": {
+      "uz": "Ushbu qora transport vositasining haydovchisi yo'nalishni o'zgartirishi qanday nomlanadi?",
+      "kr": "Ушбу қора транспорт воситасининг ҳайдовчиси йўналишни ўзгартириши қандай номланади?",
+      "ru": "Как называется изменение направления движения водителем этого чёрного транспортного средства?"
+    },
+    "explanation": {
+      "uz": "Avariya holatini yuzaga keltirish — harakat qatnashchisining boshqa harakat qatnashchilarini harakat yo'nalishini yoki tezligini keskin o'zgartirishga majbur qiladigan harakati. Rasmda qora avtomobil oq avtomobil oldiga keskin qayta tizilib, uni keskin tormozlashga majbur qilmoqda.",
+      "kr": "Авария ҳолатини юзага келтириш — ҳаракат қатнашчисининг бошқа ҳаракат қатнашчиларини ҳаракат йўналишини ёки тезлигини кескин ўзгартиришга мажбур қиладиган ҳаракати. Расмда қора автомобиль оқ автомобиль олдига кескин қайта тизилиб, уни кескин тормозлашга мажбур қилмоқда.",
+      "ru": "Создание аварийной ситуации — действие участника движения, вынуждающее других участников резко изменить направление движения или скорость. На рисунке чёрный автомобиль резко перестраивается перед белым и вынуждает его резко затормозить."
+    },
+    "answers": [
+      {"uz": "Manyovr qilish", "kr": "Манёвр қилиш", "ru": "Совершение манёвра", "correct": false},
+      {"uz": "Bo'laklar sonini o'zgartirish", "kr": "Бўлаклар сонини ўзгартириш", "ru": "Изменение количества полос", "correct": false},
+      {"uz": "Xavfli harakatlanish", "kr": "Хавфли ҳаракатланиш", "ru": "Опасное вождение", "correct": false},
+      {"uz": "Avariya holatini yuzaga keltirish", "kr": "Авария ҳолатини юзага келтириш", "ru": "Создание аварийной ситуации", "correct": true},
+      {"uz": "Barcha javoblar to'g'ri", "kr": "Барча жавоблар тўғри", "ru": "Все ответы верны", "correct": false}
+    ]
+  }
+]

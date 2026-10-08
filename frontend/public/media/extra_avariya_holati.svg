@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 540" role="img" aria-label="Qora avtomobil oq avtomobil oldiga keskin qayta tizilmoqda">
+  <defs>
+    <linearGradient id="road" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#4b5563"/>
+      <stop offset="1" stop-color="#5b6472"/>
+    </linearGradient>
+    <radialGradient id="brake" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ff3b30" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#ff3b30" stop-opacity="0"/>
+    </radialGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#facc15"/>
+    </marker>
+    <!-- avtomobil (yuqoridan), markazi (0,0), oldi tepaga qaragan -->
+    <g id="car">
+      <rect x="-15" y="-70" width="6" height="22" rx="2" fill="#111"/>
+      <rect x="9" y="-70" width="6" height="22" rx="2" fill="#111"/>
+      <rect x="-15" y="34" width="6" height="22" rx="2" fill="#111"/>
+      <rect x="9" y="34" width="6" height="22" rx="2" fill="#111"/>
+    </g>
+  </defs>
+
+  <!-- o't va to'siqlar -->
+  <rect width="820" height="540" fill="#4d7c3a"/>
+  <rect x="150" y="0" width="520" height="540" fill="url(#road)"/>
+  <g fill="#e5e7eb">
+    <rect x="140" y="0" width="10" height="540"/>
+    <rect x="670" y="0" width="10" height="540"/>
+  </g>
+  <g fill="#111827">
+    <rect x="140" y="0" width="10" height="30"/><rect x="140" y="60" width="10" height="30"/><rect x="140" y="120" width="10" height="30"/>
+    <rect x="140" y="180" width="10" height="30"/><rect x="140" y="240" width="10" height="30"/><rect x="140" y="300" width="10" height="30"/>
+    <rect x="140" y="360" width="10" height="30"/><rect x="140" y="420" width="10" height="30"/><rect x="140" y="480" width="10" height="30"/>
+    <rect x="670" y="0" width="10" height="30"/><rect x="670" y="60" width="10" height="30"/><rect x="670" y="120" width="10" height="30"/>
+    <rect x="670" y="180" width="10" height="30"/><rect x="670" y="240" width="10" height="30"/><rect x="670" y="300" width="10" height="30"/>
+    <rect x="670" y="360" width="10" height="30"/><rect x="670" y="420" width="10" height="30"/><rect x="670" y="480" width="10" height="30"/>
+  </g>
+
+  <!-- tasmalar (uzuq chiziqlar) -->
+  <g stroke="#f8fafc" stroke-width="6" stroke-dasharray="34 26">
+    <line x1="323" y1="0" x2="323" y2="540"/>
+    <line x1="497" y1="0" x2="497" y2="540"/>
+  </g>
+
+  <!-- uzoqdagi yashil avtomobil (o'ng tasma) -->
+  <g transform="translate(584 92) scale(0.8)">
+    <use href="#car"/>
+    <rect x="-34" y="-62" width="68" height="124" rx="22" fill="#15803d"/>
+    <rect x="-26" y="-40" width="52" height="24" rx="6" fill="#0f172a" opacity="0.8"/>
+    <rect x="-24" y="-12" width="48" height="40" rx="8" fill="#166534"/>
+    <rect x="-26" y="32" width="52" height="16" rx="5" fill="#0f172a" opacity="0.8"/>
+  </g>
+
+  <!-- qora avtomobil traektoriyasi: o'ng tasmadan o'rta tasmaga keskin -->
+  <path d="M590 470 C 590 360, 430 330, 412 230" fill="none" stroke="#facc15" stroke-width="6" stroke-dasharray="14 10" marker-end="url(#arrow)"/>
+
+  <!-- qora avtomobil (o'rta tasmaga kirib kelmoqda) -->
+  <g transform="translate(470 250) rotate(-24)">
+    <use href="#car"/>
+    <rect x="-36" y="-66" width="72" height="132" rx="24" fill="#0b0f19"/>
+    <rect x="-28" y="-44" width="56" height="26" rx="7" fill="#334155"/>
+    <rect x="-26" y="-14" width="52" height="44" rx="9" fill="#111827"/>
+    <rect x="-28" y="34" width="56" height="16" rx="5" fill="#334155"/>
+    <!-- chap burilish chiroqlari (chapga qayta tizilmoqda) -->
+    <circle cx="-30" cy="-60" r="6" fill="#f59e0b"/>
+    <circle cx="-30" cy="58" r="6" fill="#f59e0b"/>
+  </g>
+
+  <!-- oq avtomobil (o'rta tasma, tormozlamoqda) -->
+  <g transform="translate(410 420)">
+    <circle cx="-22" cy="70" r="24" fill="url(#brake)"/>
+    <circle cx="22" cy="70" r="24" fill="url(#brake)"/>
+    <use href="#car"/>
+    <rect x="-36" y="-66" width="72" height="132" rx="24" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+    <rect x="-28" y="-44" width="56" height="26" rx="7" fill="#1e293b"/>
+    <rect x="-26" y="-14" width="52" height="44" rx="9" fill="#e2e8f0"/>
+    <rect x="-28" y="34" width="56" height="16" rx="5" fill="#1e293b"/>
+    <rect x="-30" y="58" width="14" height="7" rx="2" fill="#ef4444"/>
+    <rect x="16" y="58" width="14" height="7" rx="2" fill="#ef4444"/>
+  </g>
+
+  <!-- "!" ogohlantirish -->
+  <g transform="translate(410 322)">
+    <circle r="22" fill="#dc2626"/>
+    <rect x="-3.5" y="-13" width="7" height="16" rx="2" fill="#fff"/>
+    <circle cy="9" r="4" fill="#fff"/>
+  </g>
+</svg>
