@@ -33,7 +33,7 @@ let Q = null;
 async function ensureContent() {
   if (DB) return;
   const base = import.meta.env.BASE_URL || "/";
-  const res = await fetch(`${base}content.json`, { cache: "force-cache" });
+  const res = await fetch(`${base}content.json`, { cache: "no-cache" });
   if (!res.ok) throw new Error("content.json yuklanmadi");
   DB = await res.json();
   Q = new Map(DB.questions.map((q) => [q.id, q]));
